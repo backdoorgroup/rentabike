@@ -1,22 +1,86 @@
-# TODO: fazer o dockerfile do front e backend
-
-services:
-  postgres:
-    image: postgres:14.2
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    healthcheck:
-      test: ["CMD", "pg_isready", "-d", "postgres", "-U", "postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: on-failure
-
-volumes:
-  postgres:
+openapi: 3.0.0
+info:
+  title: api
+  version: 1.0.0
+paths:
+  /listings:
+    get:
+      summary: Retorna todos os anúncios na plataforma
+      responses:
+        '200':
+          description: Anúncios recuperados com sucesso
+    post:
+      summary: Cria um anúncio e retorna ele
+      responses:
+        '200':
+          description: Anúncio criado com sucesso
+  /listings/{id}:
+    get:
+      summary: Retorna um anúncio dado o ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Anúncio recuperado com sucesso
+    patch:
+      summary: Edita um anúncio dado um ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Anúncio editado com sucesso
+  /listings/{id}/rate:
+    post:
+      summary: Cria uma avaliação no banco para o dado anúncio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Avaliação criada com sucesso
+  /search/listing:
+    get:
+      summary: Realiza uma busca dada uma query
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Busca realizada com sucesso
+  /profile:
+    get:
+      summary: Encontra o usuário logado
+      responses:
+        '200':
+          description: Retorna o usuário logado no Firebase e o endereço dentro da plataforma
+  /profile/{uid}:
+    get:
+      summary: Encontra um usuário dado um UID
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Retorna o perfil do usuário com o UID fornecido
+  /address:
+    post:
+      summary: Cria um endereço na plataforma
+      responses:
+        '200':
+          description: Endereço criado com sucesso
